@@ -78,7 +78,6 @@ client.connect(async function(err, db) {
     Run_Days: 1,
     Due_Date: new Date('2020-01-05') ,
     MMENotes: "Notes",
-    Amount2: "$"+11.99,
     Amount: {value: parseFloat("11.99"), currency: "USD"},
     PerHour: {value: parseFloat("1.99"), currency: "USD"},
     PerUnit: {value: parseFloat("5.99"), currency: "USD"},
@@ -91,7 +90,9 @@ client.connect(async function(err, db) {
     Description: "good part",
     Machine_Time: "02:20",
     ToolNotes: "Good Tool",
-    ViceNotes: "vice"
+    ViceNotes: "vice",
+    Scraps: {isScraps: true, scrapQuanity: 10, Types: "silver, gold, copper"}
+    //on Front-End, try to submit it so it comes in with this format
   };
 
   var newobj = {$set: {status: "broken", quantity: 11 }}; //update object
@@ -103,7 +104,7 @@ client.connect(async function(err, db) {
   //deleteFunction(dbo,mycol, myobj);
   //insertFunction(dbo,customercol, customerobj,jarray);
   //insertFunction(dbo,mycol, matobj,jarray);
-  //insertFunction(dbo,partcol,partobj,jarray);
+  insertFunction(dbo,partcol,partobj,jarray);
   //insertFunction(dbo,jobcol,jobobj,jarray);
 
   //insertFunction(dbo,inspectcol,inspectobj,jarray );
@@ -200,17 +201,6 @@ const deleteCollection = function(db, col){
     if (err) throw err;
     if (delOK) console.log("Collection " +col+ " Deleted.");
   })
-}
-
-const materialFormat = function(db, col) {
-  var dbo = db;
-  var myobj = [
-    { name: '',
-    quantity: 0,
-    status: ''
-    }
-  ];
-  return myobj;
 }
 
 
