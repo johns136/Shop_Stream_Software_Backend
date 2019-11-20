@@ -10,7 +10,7 @@ const client = MongoClient(url, { useUnifiedTopology: true });
 //const client = new MongoClient(url, { useNewUrlParser: true });
 
 // Use connect method to connect to the Server
-client.connect(function(err, db) {
+client.connect(async function(err, db) {
 
   var ran1 = randomInt(1, 100);
   var ran2 = randomInt(1,100);
@@ -26,6 +26,7 @@ client.connect(function(err, db) {
   var shiftcol = "Shift";
   var jarray = [];//an array of job_nums
 
+
   //var mymat = materialFormat(db,mycol);
   var matobj = {
     name: "Material "+ran1,
@@ -33,12 +34,17 @@ client.connect(function(err, db) {
     isMatieral: true,
     isTool: false,
     quantity: ran2,
+    length: .375,
+    width: 17.0,
+    height: 10.0,
     jobs_for: "Job 1"
   }; //obj editing\
 
    var customerobj = {
      Buyer: "Jenkins",
      Company: "Incorporated",
+     Email: "dude@gmail.com",
+     Phone: 763-333-3333
    };
   var inspectobj = {
     date: new Date('2020-01-01'),
@@ -52,14 +58,13 @@ client.connect(function(err, db) {
   };
   var shiftobj = {
     //getfromJob - partnum, jobnum,
+    Job_Num: 47,    //select a specific job_num that's available
     button_to_button_time: '02:30',
     Machine_Time: '01:15' ,
     Parts_Sampled: ran1,
     Date: new Date('2020-01-01'),
     Notes: "Some notes"
   };
-  //var order = { Order_Qty: };
-  //console.log(order);
   var jobobj = {
     OrderDate: new Date('2020-01-01'),
     PO_Num: ran1,
@@ -92,11 +97,14 @@ client.connect(function(err, db) {
   var newobj = {$set: {status: "broken", quantity: 11 }}; //update object
   var query = { name: "Company Inc" };  //find query
   var mysort = { quantity: -1 };         //sort type
+  //var a = db.jobcol.find().toArray();
+  await jarrayFunction(dbo, jobcol, jarray);
+
   //deleteFunction(dbo,mycol, myobj);
   //insertFunction(dbo,customercol, customerobj,jarray);
   //insertFunction(dbo,mycol, matobj,jarray);
   //insertFunction(dbo,partcol,partobj,jarray);
-  insertFunction(dbo,jobcol,jobobj,jarray);
+  //insertFunction(dbo,jobcol,jobobj,jarray);
 
   //insertFunction(dbo,inspectcol,inspectobj,jarray );
   //insertFunction(dbo,shiftcol,shiftobj,jarray);
@@ -106,9 +114,24 @@ client.connect(function(err, db) {
   //findQueryFunction(dbo,mycol, query);
   //sortDatabase(dbo,mycol, mysort);
   //deleteCollection(dbo, mycol);
+  //jarray.push(1);
+
   console.log(jarray);
   client.close();
 });
+
+const jarrayFunction = async function(db, col, jarray){
+  var dbo = db;
+  var findjobs = db.collection(col).find({Job_Num: {$exists:true}});
+  await findjobs.forEach(function(document){
+
+      jarray.push(document.Job_Num);
+
+      //console.log(jarray);
+  });
+
+  console.log("jarray function complete");
+}
 
 //insert myobj into collection customers
 const insertFunction = function(db, col, myobj, jarray){
@@ -123,6 +146,7 @@ const insertFunction = function(db, col, myobj, jarray){
     console.log("job_num "+myobj.Job_Num);
     jarray.push(myobj.Job_Num);
   }
+
 }
 
 //delete myobj from collection customers
