@@ -1,5 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 const moment = require('moment');
+
 //const assert = require('assert');
 //const mongoose = require('mongoose');
 //const express = require('express');
@@ -83,16 +84,15 @@ const client = MongoClient(url, { useUnifiedTopology: true });
         Part_Num: ran2,
         Order_Qty: 30,
         Recieve_Qty: 0,
-        //Remain_Qty:
+        Remain_Qty: 30,
         Cycle_Time: '02:40',
         Run_Hours: 30,
         Run_Days: 1,
         Due_Date: moment(new Date('05-10-2020')).format(dateFormat) ,
         MMENotes: "Notes",
-        Amount: {value: parseFloat("11.99"), currency: "USD"},
+        AmountTotal: {value: parseFloat("11.99"), currency: "USD"},
         PerHour: {value: parseFloat("1.99"), currency: "USD"},
         PerUnit: {value: parseFloat("5.99"), currency: "USD"},
-        Total: {value: parseFloat("11.99"), currency: "USD"}
 
       };
       var partobj = {
@@ -283,3 +283,14 @@ const specval = async function(val){
 const randomInt = function(low, high) {
   return Math.floor(Math.random() * (high - low + 1) + low)
 }
+module.exports.jarrayFunction = jarrayFunction;
+module.exports.findJob = findJob;
+module.exports.calculateTime = calculateTime;
+module.exports.insertFunction = insertFunction;
+module.exports.deleteFunction = deleteFunction;
+module.exports.updateFunction = updateFunction;
+module.exports.findAllFunction = findAllFunction;
+module.exports.findQueryFunction = findQueryFunction;
+module.exports.sortDatabase = sortDatabase;
+module.exports.sortDueDate = sortDueDate;
+module.exports.deleteCollection = deleteCollection;
