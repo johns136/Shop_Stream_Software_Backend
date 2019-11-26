@@ -1,3 +1,4 @@
+//import React from 'react';
 const MongoClient = require('mongodb').MongoClient;
 const moment = require('moment');
 
@@ -142,7 +143,6 @@ const client = MongoClient(url, { useUnifiedTopology: true });
     });
 
 
-
 const jarrayFunction = async function(db, col, jarray){
   //var dbo = db;
   var findjobs = db.collection(col).find({Job_Num: {$exists:true}});
@@ -274,23 +274,7 @@ const deleteCollection = function(db, col){
 
 
 
-const specval = async function(val){
-  //val[0].Part_Num;
-  //console.log("specval function " +val);
-  return val;
-}
-
 const randomInt = function(low, high) {
   return Math.floor(Math.random() * (high - low + 1) + low)
 }
-module.exports.jarrayFunction = jarrayFunction;
-module.exports.findJob = findJob;
-module.exports.calculateTime = calculateTime;
-module.exports.insertFunction = insertFunction;
-module.exports.deleteFunction = deleteFunction;
-module.exports.updateFunction = updateFunction;
-module.exports.findAllFunction = findAllFunction;
-module.exports.findQueryFunction = findQueryFunction;
-module.exports.sortDatabase = sortDatabase;
-module.exports.sortDueDate = sortDueDate;
-module.exports.deleteCollection = deleteCollection;
+//export {insertFunction, findJob}
