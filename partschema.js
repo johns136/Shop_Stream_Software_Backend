@@ -32,6 +32,7 @@ const partSchema = new Schema(
       Types: String
     },
   },
+  { timestamps: true },
   {collection: 'parts'}
   }
 );
