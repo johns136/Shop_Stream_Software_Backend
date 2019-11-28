@@ -8,7 +8,7 @@ const matSchema = new Schema(
       unique: true,
       required: true
     },
-    Name: {
+    matName: {
       type: String
     },
     matType: {
@@ -20,16 +20,16 @@ const matSchema = new Schema(
     isMatieral: {
       type: Boolean
     },
-    Quantity: {
+    matQuantity: {
       type: Int
     },
-    Length: {
+    matLength: {
       type: Int
     },
-    Width: {
+    matWidth: {
       type: Int
     },
-    Height: {
+    matHeight: {
       type: Int
     },
   },

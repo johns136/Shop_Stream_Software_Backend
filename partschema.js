@@ -17,7 +17,7 @@ const partSchema = new Schema(
     machine_time: {
       type: Date
     },
-    Description: {
+    partDescription: {
       type: String
     },
     ToolNotes: {

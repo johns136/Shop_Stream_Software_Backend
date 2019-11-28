@@ -23,6 +23,9 @@ const jobSchema = new Schema(
     Recieve_Qty: {
       type: Int
     },
+    Remain_Qty: {
+      type: Int
+    },
     Cycle_Time: {
       type: Date
     },
@@ -38,16 +41,13 @@ const jobSchema = new Schema(
     MMENotes: {
       type: String
     },
-    Amount: {
+    Amount_Total: {
       type Int
     },
     PerHour: {
       type: Int
     },
     PerUnit: {
-      type: Int
-    },
-    Total: {
       type: Int
     },
   },

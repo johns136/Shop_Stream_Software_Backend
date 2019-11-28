@@ -23,7 +23,7 @@ const shiftSchema = new Schema(
     Date: {
       type: Date
     },
-    Notes: {
+    ShiftNotes: {
       type: String
     },
   },
