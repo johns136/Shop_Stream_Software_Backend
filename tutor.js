@@ -2,15 +2,6 @@
 const MongoClient = require('mongodb').MongoClient;
 const moment = require('moment');
 
-//const assert = require('assert');
-//const mongoose = require('mongoose');
-//const express = require('express');
-//var cors = require('cors');
-//const bodyParser = require('body-parser');
-//const Jobs = require('./jobs')
-//const Promise = require('promise');
-// Connection URL
-//const url = 'mongodb://localhost/EmployeeDB';
 const url = 'mongodb://localhost:27017/';
 // Database Name
 const dbName = 'EmployeeDB';
@@ -19,13 +10,10 @@ const client = MongoClient(url, { useUnifiedTopology: true });
 //const client = new MongoClient(url, { useNewUrlParser: true });
 
 // Use connect method to connect to the Server
-
-  client.connect(async function(err, db) {
-
-
-      var ran1 = randomInt(1, 100);
-      var ran2 = randomInt(1,100);
-      var dateFormat = "MM/DD/YY H";
+  client.connect(async function(err, db) { //connect to the server
+      var ran1 = randomInt(1, 100); //just a random number generated to fill out fields
+      var ran2 = randomInt(1,100);//just a random number generated to fill out fields
+      var dateFormat = "MM/DD/YY H"; //the format for dates, month/day/year hour
 
       var dbo = db.db("mydb");    //database name
 
@@ -35,11 +23,11 @@ const client = MongoClient(url, { useUnifiedTopology: true });
       var jobcol = "Jobs";
       var inspectcol = "Inspect";
       var shiftcol = "Shift";
+      //these are all the collections
       var jarray = [];//an array of job_nums
 
-
       //var mymat = materialFormat(db,mycol);
-      var matobj = {
+      var matobj = {  //a material object to try filling out fields in the material database
         name: "Material "+ran1,
         type: "Metal",
         isMatieral: true,
@@ -48,28 +36,28 @@ const client = MongoClient(url, { useUnifiedTopology: true });
         length: .375,
         width: 17.0,
         height: 10.0,
-        //jobs_for: "Job 1"
       }; //obj editing\
+
       var jpartnum = await findJob(dbo, 64, jarray);
-      console.log("jpartnum "+jpartnum);
-       var customerobj = {
+      //testing out the findjob function with
+      //the jobnum 64, searches for jobnum 64 to get the corresponding partnum
+      console.log("jpartnum "+jpartnum); //display jpartnum to see if it works
+       var customerobj = {//a customer object to try filling out fields in the customer database
          Buyer: "Jenkins",
          Company: "Incorporated",
          Email: "dude@gmail.com",
          Phone: 763-333-3333
        };
-      var inspectobj = {
-        date: moment(new Date('01-01-2020')).format(dateFormat),
+      var inspectobj = { //an inspect object to try filling out fields in the inspect database
+        date: moment(new Date('01-01-2020')).format(dateFormat),  //moment helps us use calculations with dates
         Due_Date: moment(new Date('01-05-2020')).format(dateFormat),
         Description: "good inspection",
         Job_Number: 30,
         Quantity_to_Ship: ran2 ,
         Materials: "good" ,
         Part_Num: jpartnum
-        //getfromCustomer - company,buyer
       };
-      var shiftobj = {
-        //getfromJob - partnum, jobnum,
+      var shiftobj = { //a shift object to try filling out fields in the shift database
         Job_Num: 34,    //select a specific job_num that's available
         Part_Num: await findJob(dbo, 34, jarray),
         button_to_button_time: '02:30',
@@ -78,7 +66,7 @@ const client = MongoClient(url, { useUnifiedTopology: true });
         Date: moment(new Date('01-01-2020')).format('H/MM/DD/YYYY'),
         Notes: "Some notes"
       };
-      var jobobj = {
+      var jobobj = { //a job object to try filling out fields in the job database
         OrderDate: moment(new Date('01-01-2020')).format(dateFormat),
         PO_Num: ran1,
         Job_Num: ran1,
@@ -109,15 +97,15 @@ const client = MongoClient(url, { useUnifiedTopology: true });
         //on Front-End, try to submit it so it comes in with this format
       };
 
-      var newobj = {$set: {Due_Date: moment(new Date('05-17-2020')).format(dateFormat) }}; //update object
+      var newobj = {$set: {Due_Date: moment(new Date('05-17-2020')).format(dateFormat) }};
+      //used to try out the update object function with this format and fields,
+
       var query = { name: "Company Inc" };  //find query
-      //var jq  =
       var mysort = { Due_Date: 1 };         //sort type
-      //var a = db.jobcol.find().toArray();
-      await jarrayFunction(dbo, jobcol, jarray);
-      //var datea = moment('02-06-2020').format('H/MM/DD/YYYY');
-      //console.log("date a " + datea);
-      calculateTime(dbo,20);
+
+      await jarrayFunction(dbo, jobcol, jarray);  //test out jarray function
+
+      calculateTime(dbo,20);  //test out calculateTime function
 
       //deleteFunction(dbo,mycol, myobj);
       //insertFunction(dbo,customercol, customerobj,jarray);
@@ -131,40 +119,36 @@ const client = MongoClient(url, { useUnifiedTopology: true });
       //updateFunction(dbo,jobcol, jobobj, newobj);
       //findAllFunction(dbo,mycol, myobj);
       //findQueryFunction(dbo,mycol, query);
-      sortDueDate(dbo);
-      dbo.collection("Jobs").find().sort({Due_Date: 1 });
-      //deleteCollection(dbo, mycol);
-      //jarray.push(1);
 
-      //console.log(jarray);
-      //var jtest = await findJob(dbo, 30, jarray);
-      //console.log(jtest)
+      //these are all just functons to insert various things in the corresponding collections
+
+      sortDueDate(dbo);
+
+      dbo.collection("Jobs").find().sort({Due_Date: 1 });
       client.close();
     });
 
 
 const jarrayFunction = async function(db, col, jarray){
-  //var dbo = db;
+  //a function used to push all jobnums found in the jobs collection into an array
   var findjobs = db.collection(col).find({Job_Num: {$exists:true}});
   await findjobs.forEach(function(document){
-
       jarray.push(document.Job_Num);
-      //console.log("before jarray");
-      //console.log("jarray " +jarray);
+
   });
   console.log("jarray function complete");
 }
 
 const findJob = async function(db, jobnum, jarray){
+  // a function used to search all of the jobs in the jobs collections
+  //for the specified jobnum
   a = null;
   var start = db.collection('Jobs').find({Job_Num: jobnum});
   await start.forEach(function(document){
-    //console.log(result);
-    //console.log("Part_Num = "+result[0].Part_Num);
-    a = document.Part_Num;
-    //console.log("before");
-    //console.log("a at this point " +a);
-    //a = specval(result[0].Part_Num);
+
+    a = document.Part_Num;  //returns the part num associated with the job number
+    //should be able to change partnum to another variable to get other variables
+    //associated with a job num
 
   });
   console.log("findJobNum Function complete");
@@ -174,6 +158,9 @@ const findJob = async function(db, jobnum, jarray){
 }
 
 const calculateTime = async function(db, jobnum){
+  // a function used to find a job associated with a jobNum
+  // look at today's date and the job's runDays and runHours
+  //to see if there is enough time to complete the job
   var dbo = db;
   var start = db.collection("Jobs").find({Job_Num: jobnum});
   await start.forEach(function(document){
@@ -194,8 +181,10 @@ const calculateTime = async function(db, jobnum){
   });
 
 }
-//insert myobj into collection customers
+
 const insertFunction = function(db, col, myobj, jarray){
+  // insert myojb into the specified collection and if
+  //if the collection is jobs, push the jobnum into the jobnum array
   var dbo = db;
   dbo.collection(col).insertOne(myobj, function(err, res){
     //if(err) throw err;
@@ -210,8 +199,9 @@ const insertFunction = function(db, col, myobj, jarray){
 
 }
 
-//delete myobj from collection customers
+
 const deleteFunction = function(db, col,  myobj){
+  //delete myobj from specified collection
   var dbo = db;
   dbo.collection(col).deleteOne(myobj, function(err, obj){
     if (err) throw err;
@@ -219,8 +209,9 @@ const deleteFunction = function(db, col,  myobj){
   });
 }
 
-//update myobj with newobj in collection customers
+
 const updateFunction = function(db, col, myobj, newobj){
+  //update myobj with newobj in the specificied collection
   var dbo = db;
   dbo.collection(col).updateOne(myobj, newobj, function(err, res){
     if (err) throw err;
@@ -228,8 +219,9 @@ const updateFunction = function(db, col, myobj, newobj){
   });
 }
 
-//display everything in collection customers
+
 const findAllFunction = function(db,col, myobj){
+  //display everything in command prompt in specified collection
   var dbo = db;
   dbo.collection(col).find({}).toArray(function(err, result){
     if (err) throw err;
@@ -237,8 +229,9 @@ const findAllFunction = function(db,col, myobj){
   });
 }
 
-//Find a specific query or specific item
+
 const findQueryFunction = function(db,col, query){
+  //Find a specific query or specific item within the specified collection
   var dbo = db;
   dbo.collection(col).find(query).toArray(function(err, result){
     if (err) throw err;
@@ -246,8 +239,9 @@ const findQueryFunction = function(db,col, query){
   });
 }
 
-//sort collection customers by the specified sort type
+
 const sortDatabase = function(db,col, sortType){
+  //sort specified collection by the specified sort type and display in command prompt
   var dbo = db;
   dbo.collection(col).find().sort(sortType).toArray(function(err, result){
     if (err) throw err;
@@ -256,6 +250,7 @@ const sortDatabase = function(db,col, sortType){
 }
 
 const sortDueDate = function(db){
+  //sort the jobs collection by due date in order and display in command prompt
   var dbo = db;
   dbo.collection("Jobs").find().sort({Due_Date: 1}, function(err, cursor){
     if (err) throw err;
@@ -265,6 +260,7 @@ const sortDueDate = function(db){
 }
 
 const deleteCollection = function(db, col){
+  //delete the entire specified collection
   var dbo = db;
   dbo.collection(col).drop(function(err, delOK){
     if (err) throw err;
@@ -272,9 +268,7 @@ const deleteCollection = function(db, col){
   })
 }
 
-
-
 const randomInt = function(low, high) {
+  // return a random int
   return Math.floor(Math.random() * (high - low + 1) + low)
 }
-//export {insertFunction, findJob}
